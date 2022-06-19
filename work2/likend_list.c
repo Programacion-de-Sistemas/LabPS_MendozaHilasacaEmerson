@@ -65,6 +65,6 @@ node *array = NULL;
 int i;
 for (i = 0; i < 5; i++) {
     node *list = newLikend(rand() % (i+1));
-    array->next = list;
-    list->next = array->next;
+    list = list->next;
+    inicio = list;
 }
