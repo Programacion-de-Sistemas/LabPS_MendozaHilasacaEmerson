@@ -52,7 +52,7 @@ int main(){
     return 0;
 
 }
-
+// Funcion que crea nodos tipo node con un valor dado.
 node *newLikend(int value){
     node*nodo = malloc(sizeof(node));
     if(nodo == NULL){
@@ -60,4 +60,11 @@ node *newLikend(int value){
     }
     nodo->number = value;
     nodo->next = NULL;
+}
+node *array = NULL;
+int i;
+for (i = 0; i < 5; i++) {
+    node *list = newLikend(rand() % (i+1));
+    array->next = list;
+    list->next = array->next;
 }
