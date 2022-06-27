@@ -16,11 +16,19 @@ void binario(int n, int arreglo[]) {
 		value[z] = (char)rep;
 		printf("%d",arreglo[z]);
 	}
-	
 }
 
 int bis(int x, int m){
-	return 0;
+	int array[50];
+	int i,value = 0;
+	binario(m, array);
+	int size = sizeof(array) / sizeof(array[0]); // se obtiene la longitud del arreglo
+	for(i = 0; i < size; i++){
+		if(array[i] == 1){
+			value = value + ((size - i)* 10);
+		}
+	}
+	return value;
 }
 int bic(int x, int m);
 /* Calcular x|y usando solo llamadas a las funciones bis y bic */
