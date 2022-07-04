@@ -123,6 +123,79 @@ int logicalNeg(int x) {
 
 	return (~(x >> 31)) & 1; /*Vuelve lo opuesto al bit de signo*/
 }
+/* howManyBits - return the minimum number of bits required to represent x in
+ *  *             two's complement
+ *   *  Examples: howManyBits(12) = 5
+ *    *            howManyBits(298) = 10
+ *     *            howManyBits(-5) = 4
+ *      *            howManyBits(0)  = 1
+ *       *            howManyBits(-1) = 1
+ *        *            howManyBits(0x80000000) = 32
+ *         *  Legal ops: ! ~ & ^ | + << >>
+ *          *  Max ops: 90
+ *           *  Rating: 4
+ *            */
+int howManyBits(int x) {
+	int sign = (x>>31) & 1;
+	int signChain =~sign+1;
+	int placeHolder = 0; /*variable descartable para varias operaciones*/
+	int c = 2; /*contador*/
+	int copy = x; /*para ser utilizado para comprobar si el poder de 2*/
+	int copy2 = x; /*para comprobar el 0*/
+	int tminCheck =  x ^ (1 << 31);
+	tminCheck = !tminCheck;
+	tminCheck = ~tminCheck+1; /*todos si x era tmin*/
+
+	x = (x & ~signChain) | ((~x +1) & signChain);/*un valor positivo*/
+	x = x + ~0;
+	x = (x | x >> 1);
+	x = (x | x >> 2);
+	x = (x | x >> 4);
+	x = (x | x >> 8);
+	x = (x | x >> 16);
+	x = (x + 1); /*x se redondea a la siguiente potencia de 2*/
+
+	/*los siguientes fragmentos de código siguen un algoritmo 
+	 * que realiza cinco comprobaciones diferentes, incrementando 
+	 * el contador para cada comprobación para que el resultado 
+	 * sea la posición de bit del valor redondeado de x.*/
+	placeHolder = !(x & (0xFF | 0xFF << 8));
+	placeHolder = ~placeHolder+1; 
+	c += (placeHolder & 16);
+
+	placeHolder = !(x & (0xFF | 0xFF << 16));
+	placeHolder = ~placeHolder + 1;
+	c += (placeHolder & 8);
+
+	placeHolder = 0x0F | 0x0F <<8;
+	placeHolder = placeHolder | placeHolder <<16;
+	placeHolder = !(x & placeHolder);
+	placeHolder = ~placeHolder+1;  
+	c += (placeHolder & 4);
+
+	placeHolder = 0x33 | 0x33 << 8;
+	placeHolder = placeHolder | placeHolder << 16;
+	placeHolder = !(x & placeHolder);
+	placeHolder = ~placeHolder+1;
+	c += (placeHolder & 2);
+
+	placeHolder = 0x55 | 0x55 << 8;
+	placeHolder = placeHolder | placeHolder << 16;
+	placeHolder = !(x & placeHolder);
+	placeHolder = ~placeHolder+1;
+	c += (placeHolder & 1);
+
+	/*determina si x es 0. Si es así, desea devolver 1.*/
+	copy2 = !copy2;
+	copy2 = ~copy2+1;   
+
+	c += ~((tminCheck)&1);
+
+	/*agregue uno a la cuenta si x es una potencia de 2*/
+	copy = copy & (copy+~0);
+	c += !copy;
+	return (c & ~copy2) | (copy2 & 1);
+}
 
 int main() {
 	int value = bitXor(7, 8);
@@ -136,6 +209,7 @@ int main() {
         int val7 = conditional(2,4,5);
 	int val8 = isLessOrEqual(3,5);
 	int val9 = logicalNeg(4);
-	printf("%d", val9);
+	int val10 = howManyBits(15);
+	printf("%d", val10);
 	return 0;
 }
