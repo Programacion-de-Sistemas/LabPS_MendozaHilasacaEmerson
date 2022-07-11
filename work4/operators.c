@@ -196,9 +196,49 @@ int howManyBits(int x) {
 	c += !copy;
 	return (c & ~copy2) | (copy2 & 1);
 }
+/* 
+ *  * floatPower2 - Return bit-level equivalent of the expression 2.0^x
+ *   *   (2.0 raised to the power x) for any 32-bit integer x.
+ *    *
+ *     *   The unsigned value that is returned should have the identical bit
+ *      *   representation as the single-precision floating-point number 2.0^x.
+ *       *   If the result is too small to be represented as a denorm, return
+ *        *   0. If too large, return +INF.
+ *         * 
+ *          *   Legal ops: Any integer/unsigned operations incl. ||, &&. Also if, while 
+ *           *   Max ops: 30 
+ *            *   Rating: 4
+ *             */
+unsigned floatPower2(int x) {
+
+	unsigned expo;
+	unsigned frac;
+
+	if(x < -149){
+		return 0;
+	}
+
+	//desnormalizado
+	if( x<-126 && x>=-149){   
+		int corrimiento = (-x-126);
+        	frac =  1 << (23-corrimiento);
+        	return frac;
+	}
+		
+	if(x>=-126 && x<=127){
+		expo = (x+127)<<23;
+		return expo;
+	}		                            }
+		                              
+	if(x>127){
+        //infinito
+		return 0xFF << 23;;
+	}
+	return 0;
+}
 
 int main() {
-	int value = bitXor(7, 8);
+	int value = bitXor(10, 12);
 
 	int val2 = 6;
 	val2 = tmin();
@@ -210,6 +250,6 @@ int main() {
 	int val8 = isLessOrEqual(3,5);
 	int val9 = logicalNeg(4);
 	int val10 = howManyBits(15);
-	printf("%d", val10);
+	printf("%d", value);
 	return 0;
 }
